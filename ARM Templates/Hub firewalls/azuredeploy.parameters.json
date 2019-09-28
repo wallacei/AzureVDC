@@ -1,0 +1,45 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "numberOfInstances": {
+            "value": 2
+        },
+        "firewallNamePrefix": {
+            "value": "pfsense"
+        },
+        "virtualNetworkName": {
+            "value": "vdc-hub-vnet"
+        },
+        "virtualNetworkResourceGroup": {
+            "value": "rg-hub-network"
+        },
+        "trustedFirewallSubnet": {
+            "value": "trusted"
+        },
+        "trustedSubnetIpPrefixString": {
+            "value": "10.1.0."
+        },
+        "trustedFirstIpHostString": {
+            "value": "36"
+        },
+        "untrustedFirewallSubnet": {
+            "value": "untrusted"
+        },
+        "untrustedSubnetIpPrefixString": {
+            "value": "10.1.0."
+        },
+        "untrustedFirstIpHostString": {
+            "value": "68"
+        },
+        "trustedLoadBalancerIPAddress":{
+            "value": "10.1.0.40"
+        },
+        "pfSenseVhdPath": {
+            "value": "/vhd/pfsense.vhd"
+        },
+        "firewallVmSize": {
+            "value": "Standard_B2s"
+        }
+    }
+}

@@ -1,0 +1,400 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "numberOfInstances": {
+            "type": "int",
+            "metadata": {
+                "description": "The number of instances of firewalls that need to be deployed"
+            }
+        },
+        "firewallNamePrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "Then name prefix for the firewalls"
+            }
+        },
+        "virtualNetworkName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the virtual network to which the firewalls are connected"
+            }
+        },
+        "virtualNetworkResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "Resource group in which the virtual network is deployed"
+            }
+        },
+        "trustedFirewallSubnet": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the subnet for the firewalls"
+            }
+        },
+        "trustedSubnetIpPrefixString": {
+            "type": "string",
+            "metadata": {
+                "description": "First 3 octets and separating dots of the subnet (e.g. '10.0.0.')"
+            }
+        },
+        "trustedFirstIpHostString": {
+            "type": "string",
+            "metadata": {
+                "description": "Last octet without separating dot of the subnet (e.g. '68')"
+            }
+        },
+        "untrustedFirewallSubnet": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the subnet for the firewalls"
+            }
+        },
+        "untrustedSubnetIpPrefixString": {
+            "type": "string",
+            "metadata": {
+                "description": "First 3 octets and separating dots of the subnet (e.g. '10.0.0.')"
+            }
+        },
+        "untrustedFirstIpHostString": {
+            "type": "string",
+            "metadata": {
+                "description": "Last octet without separating dot of the subnet (e.g. '68')"
+            }
+        },
+        "trustedLoadBalancerIPAddress": {
+            "type": "string",
+            "metadata": {
+                "description": "Static IP address for the trusted load balancer"
+            }
+        },
+        "pfSenseVhdPath": {
+            "type": "string",
+            "metadata": {
+                "description": "Path to the pfSense VHD file on the storage account (e.g. /vhd/pfsense.vhd)"
+            }
+        },
+        "pfSenseStorageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "Storage account name on which the VHD is stored"
+            }
+        },
+        "firewallVmSize": {
+            "type": "string",
+            "metadata": {
+                "description": "VM size for the firewalls"
+            }
+        }
+    },
+    "variables": {
+        "trustedLoadBalancerName": "[concat(parameters('firewallNamePrefix'), '-trusted-lb')]",
+        "trustedLoadBalancerFrontEndName": "[concat(variables('trustedLoadBalancerName'), '-fe')]",
+        "trustedLoadBalancerBackEndName": "[concat(variables('trustedLoadBalancerName'), '-be')]",
+        "trustedLoadBalancerProbeName": "[concat(variables('trustedLoadBalancerName'), '-probe')]",
+        "trustedLoadBalancerHARuleName": "[concat(variables('trustedLoadBalancerName'), '-rule-ha')]",
+        "trustedLoadBalancerId": "[resourceId('Microsoft.Network/loadBalancers', variables('trustedLoadBalancerName'))]",
+        "trustedLoadBalancerFrontEndIPConfigId": "[concat(variables('trustedLoadBalancerId'), '/frontendIPConfigurations/', variables('trustedLoadBalancerFrontEndName'))]",
+        "trustedLoadBalancerBackEndPoolId": "[concat(variables('trustedLoadBalancerId'), '/backendAddressPools/', variables('trustedLoadBalancerBackEndName'))]",
+        "trustedLoadBalancerProbeId": "[concat(variables('trustedLoadBalancerId'), '/probes/', variables('trustedLoadBalancerProbeName'))]",
+        "untrustedLoadBalancerName": "[concat(parameters('firewallNamePrefix'), '-untrusted-lb')]",
+        "untrustedLoadBalancerFrontEndName": "[concat(variables('untrustedLoadBalancerName'), '-fe')]",
+        "untrustedLoadBalancerBackEndName": "[concat(variables('untrustedLoadBalancerName'), '-be')]",
+        "untrustedLoadBalancerProbeName": "[concat(variables('untrustedLoadBalancerName'), '-probe')]",
+        "untrustedLoadBalancerHttpsRuleName": "[concat(variables('untrustedLoadBalancerName'), '-rule-https')]",
+        "untrustedLoadBalancerId": "[resourceId('Microsoft.Network/loadBalancers', variables('untrustedLoadBalancerName'))]",
+        "untrustedLoadBalancerFrontEndIPConfigId": "[concat(variables('untrustedLoadBalancerId'), '/frontendIPConfigurations/', variables('untrustedLoadBalancerFrontEndName'))]",
+        "untrustedLoadBalancerBackEndPoolId": "[concat(variables('untrustedLoadBalancerId'), '/backendAddressPools/', variables('untrustedLoadBalancerBackEndName'))]",
+        "untrustedLoadBalancerProbeId": "[concat(variables('untrustedLoadBalancerId'), '/probes/', variables('untrustedLoadBalancerProbeName'))]",
+        "untrustedLoadBalancerPublicIPName": "[concat(variables('untrustedLoadBalancerName'), '-pip')]",
+        "pfSenseSourceUri": "[concat('https://', parameters('pfSenseStorageAccountName'), '.blob.core.windows.net', parameters('pfSenseVhdPath'))]",
+        "trustedSubnetRef": "[resourceId(parameters('virtualNetworkResourceGroup') ,'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('trustedFirewallSubnet'))]",
+        "untrustedSubnetRef": "[resourceId(parameters('virtualNetworkResourceGroup') ,'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('untrustedFirewallSubnet'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "sku": {
+                "name": "Standard"
+            },
+            "name": "[variables('untrustedLoadBalancerPublicIPName')]",
+            "apiVersion": "2018-08-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "publicIPAllocationMethod": "Static",
+                "publicIPAddressVersion": "IPv4"
+            }
+        },
+        {
+            "type": "Microsoft.Network/loadBalancers",
+            "sku": {
+                "name": "Standard"
+            },
+            "name": "[variables('untrustedLoadBalancerName')]",
+            "apiVersion": "2018-08-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "frontendIPConfigurations": [
+                    {
+                        "name": "[variables('untrustedLoadBalancerFrontEndName')]",
+                        "properties": {
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('untrustedLoadBalancerPublicIPName'))]"
+                            }
+                        }
+                    }
+                ],
+                "backendAddressPools": [
+                    {
+                        "name": "[variables('untrustedLoadBalancerBackEndName')]"
+                    }
+                ],
+                "loadBalancingRules": [
+                    {
+                        "name": "[variables('untrustedLoadBalancerHttpsRuleName')]",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[variables('untrustedLoadBalancerFrontEndIPConfigId')]"
+                            },
+                            "backendAddressPool": {
+                                "id": "[variables('untrustedLoadBalancerBackEndPoolId')]"
+                            },
+                            "protocol": "Tcp",
+                            "frontendPort": 443,
+                            "backendPort": 443,
+                            "enableFloatingIP": false,
+                            "idleTimeoutInMinutes": 5,
+                            "probe": {
+                                "id": "[variables('untrustedLoadBalancerProbeId')]"
+                            }
+                        }
+                    }
+                ],
+                "probes": [
+                    {
+                        "name": "[variables('untrustedLoadBalancerProbeName')]",
+                        "properties": {
+                            "protocol": "tcp",
+                            "port": 443,
+                            "intervalInSeconds": 5,
+                            "numberOfProbes": 2
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIPAddresses/', variables('untrustedLoadBalancerPublicIPName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/loadBalancers",
+            "sku": {
+                "name": "Standard"
+            },
+            "name": "[variables('trustedLoadBalancerName')]",
+            "apiVersion": "2018-12-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "frontendIPConfigurations": [
+                    {
+                        "name": "[variables('trustedLoadBalancerFrontEndName')]",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "subnet": {
+                                "id": "[variables('trustedSubnetRef')]"
+                            },
+                            "privateIPAddress": "[parameters('trustedLoadBalancerIPAddress')]"
+                        }
+                    }
+                ],
+                "backendAddressPools": [
+                    {
+                        "name": "[variables('trustedLoadBalancerBackEndName')]"
+                    }
+                ],
+                "loadBalancingRules": [
+                    {
+                        "name": "[variables('trustedLoadBalancerHARuleName')]",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[variables('trustedLoadBalancerFrontEndIPConfigId')]"
+                            },
+                            "backendAddressPool": {
+                                "id": "[variables('trustedLoadBalancerBackEndPoolId')]"
+                            },
+                            "protocol": "All",
+                            "frontendPort": 0,
+                            "backendPort": 0,
+                            "enableFloatingIP": false,
+                            "idleTimeoutInMinutes": 5,
+                            "probe": {
+                                "id": "[variables('trustedLoadBalancerProbeId')]"
+                            }
+                        }
+                    }
+                ],
+                "probes": [
+                    {
+                        "name": "[variables('trustedLoadBalancerProbeName')]",
+                        "properties": {
+                            "protocol": "tcp",
+                            "port": 443,
+                            "intervalInSeconds": 5,
+                            "numberOfProbes": 2
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Compute/availabilitySets",
+            "name": "[concat(parameters('firewallNamePrefix'), '-as')]",
+            "apiVersion": "2018-04-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "platformFaultDomainCount": 3,
+                "platformUpdateDomainCount": 3
+            },
+            "sku": {
+                "name": "Aligned"
+            }
+        },
+        {
+            "apiVersion": "2016-03-30",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[concat(parameters('firewallNamePrefix'), '-', copyIndex(1), '-trusted-nic')]",
+            "location": "[resourceGroup().location]",
+            "copy": {
+                "count": "[parameters('numberOfInstances')]",
+                "name": "nicCopy"
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/loadBalancers/', variables('trustedLoadBalancerName'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('firewallNamePrefix'), '-', copyIndex(1), '-untrusted-nic'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[concat(parameters('trustedSubnetIpPrefixString'), copyIndex(int(parameters('trustedFirstIpHostString'))))]",
+                            "subnet": {
+                                "id": "[variables('trustedSubnetRef')]"
+                            },
+                            "loadBalancerBackendAddressPools": [
+                                {
+                                    "id": "[variables('trustedLoadBalancerBackEndPoolId')]"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "enableIPForwarding": true
+            }
+        },
+        {
+            "apiVersion": "2016-03-30",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[concat(parameters('firewallNamePrefix'), '-', copyIndex(1), '-untrusted-nic')]",
+            "location": "[resourceGroup().location]",
+            "copy": {
+                "count": "[parameters('numberOfInstances')]",
+                "name": "nicCopy"
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/loadBalancers/', variables('untrustedLoadBalancerName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[concat(parameters('untrustedSubnetIpPrefixString'), copyIndex(int(parameters('untrustedFirstIpHostString'))))]",
+                            "subnet": {
+                                "id": "[variables('untrustedSubnetRef')]"
+                            },
+                            "loadBalancerBackendAddressPools": [
+                                {
+                                    "id": "[variables('untrustedLoadBalancerBackEndPoolId')]"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "enableIPForwarding": true
+            }
+        },
+        {
+            "apiVersion": "2017-03-30",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[concat(parameters('firewallNamePrefix'), '-', copyIndex(1))]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/availabilitySets', concat(parameters('firewallNamePrefix'), '-as'))]",
+                "diskcopy",
+                "nicCopy"
+            ],
+            "copy": {
+                "count": "[parameters('numberOfInstances')]",
+                "name": "vmCopy"
+            },
+            "properties": {
+                "availabilitySet": {
+                    "id": "[resourceId('Microsoft.Compute/availabilitySets', concat(parameters('firewallNamePrefix'), '-as'))]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('firewallVmSize')]"
+                },
+                "storageProfile": {
+                    "osDisk": {
+                        "osType": "Linux",
+                        "createOption": "Attach",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "id": "[resourceId('Microsoft.Compute/disks/', concat(parameters('firewallNamePrefix'), '-', copyIndex(1), '-os'))]"
+                        }
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "properties": {
+                                "primary": true
+                            },
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('firewallNamePrefix'), '-', copyIndex(1), '-untrusted-nic'))]"
+                        },
+                        {
+                            "properties": {
+                                "primary": false
+                            },
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('firewallNamePrefix'), '-', copyIndex(1), '-trusted-nic'))]"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-03-30",
+            "type": "Microsoft.Compute/disks",
+            "name": "[concat(parameters('firewallNamePrefix'), '-', copyIndex(1), '-os')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "copy": {
+                "name": "DiskCopy",
+                "count": "[parameters('numberOfInstances')]"
+            },
+            "properties": {
+                "osType": "Linux",
+                "creationData": {
+                    "createOption": "Import",
+                    "sourceUri": "[variables('pfSenseSourceUri')]"
+                },
+                "diskSizeGB": 30
+            }
+        }
+    ]
+}

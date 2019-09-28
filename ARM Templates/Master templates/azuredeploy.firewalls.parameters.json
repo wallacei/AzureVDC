@@ -1,0 +1,75 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualNetworkResourceGroup": {
+            "value": "rg-hub-network"
+        },
+        "firewallResourceGroup": {
+            "value": "rg-hub-firewalls"
+        },
+        "managementResourceGroup": {
+            "value": "rg-hub-management"
+        },
+        "location": {
+            "value": "West Europe"
+        },
+        "hubVnetName": {
+            "value": "vdc-hub-vnet"
+        },
+        "trustedSubnetName": {
+            "value": "trusted"
+        },
+        "untrustedSubnetName": {
+            "value": "untrusted"
+        },
+        "managementSubnetName": {
+            "value": "management"
+        },
+        "numberOfInstances": {
+            "value": 2
+        },
+        "firewallNamePrefix": {
+            "value": "pfsense"
+        },
+        "trustedSubnetIpPrefixString": {
+            "value": "10.1.0."
+        },
+        "trustedFirstIpHostString": {
+            "value": "36"
+        },
+        "untrustedSubnetIpPrefixString": {
+            "value": "10.1.0."
+        },
+        "untrustedFirstIpHostString": {
+            "value": "68"
+        },
+        "trustedLoadBalancerIPAddress": {
+            "value": "10.1.0.40"
+        },
+        "pfSenseVhdPath": {
+            "value": "/vhd/pfsense.vhd"
+        },
+        "firewallVmSize": {
+            "value": "Standard_B2s"
+        },
+        "_artifactsLocation": {
+            "value": "https://raw.githubusercontent.com/christofvg/AzureVDC/master/"
+        },
+        "location": {
+            "value": "West Europe"
+        },
+        "adminUsername": {
+            "value": "admin.mgmt"
+        },
+        "windowsOSVersion": {
+            "value": "2016-Datacenter-smalldisk"
+        },
+        "managementVMName": {
+            "value": "pfsense-mgmt"
+        },
+        "managementVMSize": {
+            "value": "Standard_D2S_v3"
+        }
+    }
+}

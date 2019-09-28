@@ -1,0 +1,300 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualNetworkResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "The resource group where to deploy the virtual network"
+            }
+        },
+        "spoke1VirtualNetworkResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "The resource group where to deploy the spoke 1 virtual network"
+            }
+        },
+        "spoke2VirtualNetworkResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "The resource group where to deploy the spoke 2 virtual network"
+            }
+        },
+        "localNetworkGatewayName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the local network gateway representing the on-prem connection"
+            }
+        },
+		"localNetworkGatewayAddressPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The address space for the local network gateway representing the on-prem address space"
+            }
+        },
+		"localNetworkGatewayIpAddress": {
+            "type": "string",
+            "metadata": {
+                "description": "The Public IP address of the on-prem network"
+            }
+        },
+        "hubVnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the HUB virtual network"
+            }
+        },
+        "hubVnetPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The prefix for the HUB virtual network"
+            }
+        },
+        "gatewaySubnetPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The prefix for the gateway subnet"
+            }
+        },
+        "trustedSubnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the trusted subnet"
+            }
+        },
+        "trustedSubnetPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The prefix for the trusted subnet"
+            }
+        },
+        "untrustedSubnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the untrusted subnet"
+            }
+        },
+        "untrustedSubnetPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The prefix for the untrusted subnet"
+            }
+        },
+        "managementSubnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the management subnet"
+            }
+        },
+        "managementSubnetPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The prefix for the management subnet"
+            }
+        },
+        "_artifactsLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "Path to the repository where the linked templates can be found"
+            },
+            "defaultValue": "https://raw.githubusercontent.com/christofvg/AzureVDC/master/"
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "The Azure location to deploy all resources"
+            },
+            "defaultValue": "[resourceGroup().location]"
+        },
+        "spoke1VnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the spoke 1 virtual network"
+            }
+        },
+        "spoke1VnetPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The prefix for the spoke 1 virtual network"
+            }
+        },
+        "spoke1SubnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the spoke 1 subnet"
+            }
+        },
+        "spoke1SubnetPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The prefix for the spoke 1 subnet"
+            }
+        },
+        "spoke2VnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the spoke 2 virtual network"
+            }
+        },
+        "spoke2VnetPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The prefix for the spoke 2 virtual network"
+            }
+        },
+        "spoke2SubnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the spoke 2 subnet"
+            }
+        },
+        "spoke2SubnetPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The prefix for the spoke 2 subnet"
+            }
+        }
+    },
+    "variables": {
+        "networkTemplateUri": "[uri(parameters('_artifactsLocation'), concat('ARM Templates/Hub network/azuredeploy.json'))]",
+        "spokeNetworkTemplateUri": "[uri(parameters('_artifactsLocation'), concat('ARM Templates/Spoke network/azuredeploy.json'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2018-11-01",
+            "location": "[parameters('location')]",
+            "name": "[parameters('virtualNetworkResourceGroup')]",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2018-11-01",
+            "location": "[parameters('location')]",
+            "name": "[parameters('spoke1VirtualNetworkResourceGroup')]",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2018-11-01",
+            "location": "[parameters('location')]",
+            "name": "[parameters('spoke2VirtualNetworkResourceGroup')]",
+            "properties": {}
+        },
+        {
+            "name": "provisionVirtualNetwork",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/resourceGroups', parameters('virtualNetworkResourceGroup'))]"
+            ],
+            "apiVersion": "2018-11-01",
+            "ResourceGroup": "[parameters('virtualNetworkResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('networkTemplateUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+					"localNetworkGatewayName": {
+						"value": "[parameters('localNetworkGatewayName')]"
+					},
+					"localNetworkGatewayAddressPrefix": {
+						"value": "[parameters('localNetworkGatewayAddressPrefix')]"
+					},
+					"localNetworkGatewayIpAddress": {
+						"value": "[parameters('localNetworkGatewayIpAddress')]"
+					},
+                    "hubVnetName": {
+                        "value": "[parameters('hubVnetName')]"
+                    },
+                    "hubVnetPrefix": {
+                        "value": "[parameters('hubVnetPrefix')]"
+                    },
+                    "gatewaySubnetPrefix": {
+                        "value": "[parameters('gatewaySubnetPrefix')]"
+                    },
+                    "trustedSubnetName": {
+                        "value": "[parameters('trustedSubnetName')]"
+                    },
+                    "trustedSubnetPrefix": {
+                        "value": "[parameters('trustedSubnetPrefix')]"
+                    },
+                    "untrustedSubnetName": {
+                        "value": "[parameters('untrustedSubnetName')]"
+                    },
+                    "untrustedSubnetPrefix": {
+                        "value": "[parameters('untrustedSubnetPrefix')]"
+                    },
+                    "managementSubnetName": {
+                        "value": "[parameters('managementSubnetName')]"
+                    },
+                    "managementSubnetPrefix": {
+                        "value": "[parameters('managementSubnetPrefix')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "provisionSpoke1VirtualNetwork",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/resourceGroups', parameters('spoke1VirtualNetworkResourceGroup'))]"
+            ],
+            "apiVersion": "2018-11-01",
+            "ResourceGroup": "[parameters('spoke1VirtualNetworkResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('spokeNetworkTemplateUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "spokeVnetName": {
+                        "value": "[parameters('spoke1VnetName')]"
+                    },
+                    "spokeVnetPrefix": {
+                        "value": "[parameters('spoke1VnetPrefix')]"
+                    },
+                    "spokeSubnetName": {
+                        "value": "[parameters('spoke1SubnetName')]"
+                    },
+                    "spokeSubnetPrefix": {
+                        "value": "[parameters('spoke1SubnetPrefix')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "provisionSpoke2VirtualNetwork",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/resourceGroups', parameters('spoke2VirtualNetworkResourceGroup'))]"
+            ],
+            "apiVersion": "2018-11-01",
+            "ResourceGroup": "[parameters('spoke2VirtualNetworkResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('spokeNetworkTemplateUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "spokeVnetName": {
+                        "value": "[parameters('spoke2VnetName')]"
+                    },
+                    "spokeVnetPrefix": {
+                        "value": "[parameters('spoke2VnetPrefix')]"
+                    },
+                    "spokeSubnetName": {
+                        "value": "[parameters('spoke2SubnetName')]"
+                    },
+                    "spokeSubnetPrefix": {
+                        "value": "[parameters('spoke2SubnetPrefix')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}
