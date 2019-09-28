@@ -51,7 +51,7 @@
             "value": "10.1.0.96/27"
         },
         "_artifactsLocation": {
-            "value": "https://raw.githubusercontent.com/christofvg/AzureVDC/master/"
+			"value": "https://raw.githubusercontent.com/wallacei/AzureVDC/master/"
         },
         "spoke1VnetName": {
             "value": "vdc-spoke1-vnet"
