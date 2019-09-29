@@ -2,20 +2,35 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "onPremVnetName": {
-            "value": "vdc-onprem-vnet"
+        "vpnType": {
+            "value": "RouteBased"
         },
-        "onPremVnetPrefix": {
-            "value": "10.0.0.0/16"
+        "gatewayPublicIPName": {
+            "value": "vdc-hub-gateway-ip"
         },
-        "onPremSubnetName": {
-            "value": "onpremsubnet"
+        "gatewayName": {
+            "value": "vdc-hub-gateway"
         },
-        "onPremSubnetPrefix": {
-            "value": "10.0.0.0/24"
+        "gatewaySku": {
+            "value": "Basic"
         },
-        "gatewaySubnetPrefix": {
-            "value": "10.0.1.0/24"
+        "connectionName": {
+            "value": "vdc-hub-gateway-onprem-connection"
+        },
+        "localNetworkGatewayName": {
+            "value": "vdc-hub-lgw"
+        },
+		"localNetworkGatewayAddressPrefix": {
+            "value": "192.168.0.0/24"
+        },
+		"localNetworkGatewayIpAddress": {
+            "value": "89.101.127.157"
+        },
+        "hubVnetName": {
+            "value": "vdc-hub-vnet"
+        },
+        "sharedKey": {
+            "value": "GEN-UNIQUE"
         }
     }
 }
