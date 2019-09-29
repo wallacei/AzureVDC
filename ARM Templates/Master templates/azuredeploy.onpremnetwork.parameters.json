@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "_artifactsLocation": {
+			"value": "https://raw.githubusercontent.com/wallacei/AzureVDC/master/"
+        },
+        "location": {
+            "value": "North Europe"
+        },
+        "vpnType": {
+            "value": "RouteBased"
+        },
+        "gatewayPublicIPName": {
+            "value": "vdc-hub-gateway-ip"
+        },
+        "gatewayName": {
+            "value": "vdc-hub-gateway"
+        },
+        "gatewaySku": {
+            "value": "Basic"
+        },
+        "connectionName": {
+            "value": "vdc-hub-gateway-onprem-connection"
+        },
+        "localNetworkGatewayName": {
+            "value": "vdc-hub-lgw"
+        },
+		"localNetworkGatewayAddressPrefix": {
+            "value": "192.168.0.0/24"
+        },
+		"localNetworkGatewayIpAddress": {
+            "value": "89.101.127.157"
+        },
+        "hubVnetName": {
+            "value": "vdc-hub-vnet"
+        },
+        "sharedKey": {
+            "value": "GEN-UNIQUE"
+        }
+    }
+}

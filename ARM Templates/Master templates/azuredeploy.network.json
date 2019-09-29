@@ -20,24 +20,6 @@
                 "description": "The resource group where to deploy the spoke 2 virtual network"
             }
         },
-        "localNetworkGatewayName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name for the local network gateway representing the on-prem connection"
-            }
-        },
-		"localNetworkGatewayAddressPrefix": {
-            "type": "string",
-            "metadata": {
-                "description": "The address space for the local network gateway representing the on-prem address space"
-            }
-        },
-		"localNetworkGatewayIpAddress": {
-            "type": "string",
-            "metadata": {
-                "description": "The Public IP address of the on-prem network"
-            }
-        },
         "hubVnetName": {
             "type": "string",
             "metadata": {
@@ -196,15 +178,6 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-					"localNetworkGatewayName": {
-						"value": "[parameters('localNetworkGatewayName')]"
-					},
-					"localNetworkGatewayAddressPrefix": {
-						"value": "[parameters('localNetworkGatewayAddressPrefix')]"
-					},
-					"localNetworkGatewayIpAddress": {
-						"value": "[parameters('localNetworkGatewayIpAddress')]"
-					},
                     "hubVnetName": {
                         "value": "[parameters('hubVnetName')]"
                     },

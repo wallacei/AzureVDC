@@ -1,0 +1,161 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "_artifactsLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "Path to the repository where the linked templates can be found"
+            },
+            "defaultValue": "https://raw.githubusercontent.com/wallacei/AzureVDC/master/"
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "The Azure location to deploy all resources"
+            },
+            "defaultValue": "[resourceGroup().location]"
+        },
+        "gatewayResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "The resource group where to deploy the gateway"
+            }
+        },
+        "vpnType": {
+            "type": "string",
+            "metadata": {
+              "description": "Route based (Dynamic Gateway) or Policy based (Static Gateway)"
+            },
+            "defaultValue": "RouteBased",
+            "allowedValues": [
+              "RouteBased",
+              "PolicyBased"
+            ]
+        },
+        "gatewayPublicIPName": {
+            "type": "string",
+            "defaultValue": "azureGatewayIP",
+            "metadata": {
+              "description": "Arbitrary name for public IP resource used for the new azure gateway"
+            }
+        },
+        "gatewayName": {
+            "type": "string",
+            "defaultValue": "azureGateway",
+            "metadata": {
+              "description": "Arbitrary name for the new gateway"
+            }
+        },
+        "gatewaySku": {
+            "type": "string",
+            "defaultValue": "Basic",
+            "allowedValues": [
+              "Basic",
+              "Standard",
+              "HighPerformance"
+            ],
+            "metadata": {
+              "description": "The Sku of the Gateway. This must be one of Basic, Standard or HighPerformance."
+            }
+        },
+        "connectionName": {
+            "type": "string",
+            "defaultValue": "Azure2Other",
+            "metadata": {
+              "description": "Arbitrary name for the new connection between Azure VNet and other network"
+            }
+        },
+        "localNetworkGatewayName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the local network gateway representing the on-prem connection"
+            }
+        },
+		"localNetworkGatewayAddressPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The address prefix representing the on-prem network"
+            }
+        },
+		"localNetworkGatewayIpAddress": {
+            "type": "string",
+            "metadata": {
+                "description": "The public ip address of the on-prem network"
+            }
+        },
+        "hubVnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the HUB virtual network"
+            }
+        },
+        "sharedKey": {
+            "type": "string",
+            "metadata": {
+                "description": "The shared key for the IPSEC connection"
+            }
+        }
+    },
+    "variables": {
+        "gatewayTemplateUri": "[uri(parameters('_artifactsLocation'), concat('ARM Templates/Onprem network/azuredeploy.json'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2018-11-01",
+            "location": "[parameters('location')]",
+            "name": "[parameters('gatewayResourceGroup')]",
+            "properties": {}
+        },
+        {
+            "name": "provisionGateway",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/resourceGroups', parameters('gatewayResourceGroup'))]"
+            ],
+            "apiVersion": "2018-11-01",
+            "ResourceGroup": "[parameters('gatewayResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('gatewayTemplateUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "vpnType": {
+                        "value": "[parameters('vpnType')]"
+                    },
+                    "gatewayPublicIPName": {
+                        "value": "[parameters('gatewayPublicIPName')]"
+                    },
+                    "gatewayName": {
+                        "value": "[parameters('gatewayName')]"
+                    },
+                    "gatewaySku": {
+                        "value": "[parameters('gatewaySku')]"
+                    },
+                    "connectionName": {
+                        "value": "[parameters('connectionName')]"
+                    },
+                    "localNetworkGatewayName": {
+                        "value": "[parameters('localNetworkGatewayName')]"
+                    },
+                    "localNetworkGatewayAddressPrefix": {
+                        "value": "[parameters('localNetworkGatewayAddressPrefix')]"
+                    },
+                    "localNetworkGatewayIpAddress": {
+                        "value": "[parameters('localNetworkGatewayIpAddress')]"
+                    },
+                    "hubVnetName": {
+                        "value": "[parameters('hubVnetName')]"
+                    },
+                    "sharedKey": {
+                        "value": "[parameters('sharedKey')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}
