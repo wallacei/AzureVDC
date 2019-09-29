@@ -2,24 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-		"localNetworkGatewayName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name for the local network gateway representing the on-prem connection"
-            }
-        },
-		"localNetworkGatewayAddressPrefix": {
-            "type": "string",
-            "metadata": {
-                "description": "The name for the local network gateway representing the on-prem connection"
-            }
-        },
-		"localNetworkGatewayName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name for the local network gateway representing the on-prem connection"
-            }
-        },
         "hubVnetName": {
             "type": "string",
             "metadata": {
@@ -146,24 +128,7 @@
                     }
                 ]
             }
-        },
-		{
-            "name": "[parameters('localNetworkGatewayName')]",
-            "type": "Microsoft.Network/localNetworkGateways",
-			"dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('hubVnetName'))]"
-            ],
-            "apiVersion": "2017-06-01",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "localNetworkAddressSpace": {
-                    "addressPrefixes": [
-                        "192.168.0.0/24"
-                    ]
-                },
-                "gatewayIpAddress": "89.101.127.157"
-            }
-        },
+        }
     ],
     "outputs": {}
 }
