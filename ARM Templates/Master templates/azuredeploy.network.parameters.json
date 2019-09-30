@@ -2,6 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "_artifactsLocation": {
+			"value": "https://raw.githubusercontent.com/wallacei/AzureVDC/master/"
+        },
         "virtualNetworkResourceGroup": {
             "value": "rg-hub-network"
         },
@@ -40,9 +43,6 @@
         },
         "managementSubnetPrefix": {
             "value": "10.1.0.96/27"
-        },
-        "_artifactsLocation": {
-			"value": "https://raw.githubusercontent.com/wallacei/AzureVDC/master/"
         },
         "spoke1VnetName": {
             "value": "vdc-spoke1-vnet"

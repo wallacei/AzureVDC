@@ -79,21 +79,21 @@
             }
         },
 		"localNetworkGatewayIpAddress": {
-            "type": "string",
+            "type": "securestring",
             "metadata": {
                 "description": "The public ip address of the on-prem network"
+            }
+        },
+        "sharedKey": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The shared key for the IPSEC connection"
             }
         },
         "hubVnetName": {
             "type": "string",
             "metadata": {
                 "description": "The name for the HUB virtual network"
-            }
-        },
-        "sharedKey": {
-            "type": "string",
-            "metadata": {
-                "description": "The shared key for the IPSEC connection"
             }
         }
     },

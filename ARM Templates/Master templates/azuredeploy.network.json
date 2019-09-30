@@ -2,6 +2,13 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "_artifactsLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "Path to the repository where the linked templates can be found"
+            },
+            "defaultValue": "https://raw.githubusercontent.com/wallacei/AzureVDC/master/"
+        },
         "virtualNetworkResourceGroup": {
             "type": "string",
             "metadata": {
@@ -73,13 +80,6 @@
             "metadata": {
                 "description": "The prefix for the management subnet"
             }
-        },
-        "_artifactsLocation": {
-            "type": "string",
-            "metadata": {
-                "description": "Path to the repository where the linked templates can be found"
-            },
-            "defaultValue": "https://raw.githubusercontent.com/christofvg/AzureVDC/master/"
         },
         "location": {
             "type": "string",

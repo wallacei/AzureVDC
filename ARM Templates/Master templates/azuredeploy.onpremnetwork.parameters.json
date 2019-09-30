@@ -29,14 +29,8 @@
 		"localNetworkGatewayAddressPrefix": {
             "value": "192.168.0.0/24"
         },
-		"localNetworkGatewayIpAddress": {
-            "value": "89.101.127.157"
-        },
         "hubVnetName": {
             "value": "vdc-hub-vnet"
-        },
-        "sharedKey": {
-            "value": "GEN-UNIQUE"
         }
     }
 }
