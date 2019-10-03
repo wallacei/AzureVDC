@@ -75,7 +75,7 @@
             }
         },
         "pfSenseStorageAccountName": {
-            "type": "string",
+            "type": "securestring",
             "metadata": {
                 "description": "Storage account name on which the VHD is stored"
             }
