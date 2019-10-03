@@ -93,7 +93,7 @@
             }
         },
         "pfSenseStorageAccountName": {
-            "type": "string",
+            "type": "securestring",
             "metadata": {
                 "description": "Storage account name on which the VHD is stored"
             }
@@ -109,7 +109,7 @@
             "metadata": {
                 "description": "Path to the repository where the linked templates can be found"
             },
-            "defaultValue": "https://raw.githubusercontent.com/christofvg/AzureVDC/master/"
+            "defaultValue": "https://raw.githubusercontent.com/wallacei/AzureVDC/master/"
         },
         "location": {
             "type": "string",

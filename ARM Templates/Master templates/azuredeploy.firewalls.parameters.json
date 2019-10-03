@@ -54,7 +54,7 @@
             "value": "Standard_B2s"
         },
         "_artifactsLocation": {
-            "value": "https://raw.githubusercontent.com/christofvg/AzureVDC/master/"
+            "value": "https://raw.githubusercontent.com/wallacei/AzureVDC/master/"
         },
         "location": {
             "value": "West Europe"
