@@ -18,7 +18,7 @@
             "value": "2016-Datacenter-smalldisk"
         },
         "managementVMName": {
-            "value": "pfsense-mgmt"
+            "value": "pfSense-mgmt"
         },
         "managementVMSize": {
             "value": "Standard_D2S_v3"

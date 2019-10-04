@@ -363,6 +363,7 @@
             "apiVersion": "2017-03-30",
             "type": "Microsoft.Compute/disks",
             "name": "[concat(parameters('firewallNamePrefix'), '-', copyIndex(1), '-os')]",
+			"zones": "[split(string(add(mod(copyIndex(),3),1)), ',')]",
             "location": "[resourceGroup().location]",
             "sku": {
                 "name": "Standard_LRS"

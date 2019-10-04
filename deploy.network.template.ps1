@@ -15,7 +15,7 @@
 # Execution begins here
 #******************************************************************************
 $ErrorActionPreference = "Stop"
-$scriptDir = $PSScriptRoot + "\"
+$scriptDir = $PSScriptRoot + "\" + "ARM Templates\Master templates\"
 
 # sign in
 Write-Host "Logging in...";
