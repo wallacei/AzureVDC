@@ -30,4 +30,4 @@ $params = @{
 # Start the deployment
 Write-Host "Starting deployment...";
 #New-AzResourceGroupDeployment @params
-New-AzDeployment @params
+New-AzDeployment @params -Verbose

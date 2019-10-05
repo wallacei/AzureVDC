@@ -42,8 +42,8 @@
     "variables": {
         "spokeVnetRef": "[resourceid('Microsoft.Network/virtualNetworks', parameters('spokeVnetName'))]",
         "hubVnetRef":    "[resourceid('Microsoft.Network/virtualNetworks', parameters('hubVnetName'))]",
-        "spokeVnet-to-hubVnet-PeeringName": "[concat(parameters('spokeVnetName'), '-', parameters('hubVnetName'), '-', 'Peering')]",
-        "hubVnet-to-spoke1Vnet-PeeringName": "[concat(parameters('hubVnetName'), '-', parameters('spokeVnetName'), '-', 'Peering')]"
+        "spokeVnet-to-hubVnet-PeeringName": "[concat(parameters('spokeVnetName'), '/to-', parameters('hubVnetName'), '-', 'Peering')]",
+        "hubVnet-to-spoke1Vnet-PeeringName": "[concat(parameters('hubVnetName'), '/to-', parameters('spokeVnetName'), '-', 'Peering')]"
     },
     "resources": [
         {
