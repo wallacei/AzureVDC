@@ -25,9 +25,26 @@
             "metadata": {
                 "description": "The prefix for the spoke subnet"
             }
+        },
+        "hubVnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the hub virtual network"
+            }
+        },
+        "hubVnetResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the hub virtual network resource group"
+            }
         }
     },
-    "variables": {},
+    "variables": {
+        "spokeVnetRef": "[resourceid('Microsoft.Network/virtualNetworks', parameters('spokeVnetName'))]",
+        "hubVnetRef":    "[resourceid('Microsoft.Network/virtualNetworks', parameters('hubVnetName'))]",
+        "spokeVnet-to-hubVnet-PeeringName": "[concat(parameters('spokeVnetName'), '-', parameters('hubVnetName'), '-', 'Peering')]",
+        "hubVnet-to-spoke1Vnet-PeeringName": "[concat(parameters('hubVnetName'), '-', parameters('spokeVnetName'), '-', 'Peering')]"
+    },
     "resources": [
         {
             "type": "Microsoft.Network/virtualNetworks",
@@ -50,6 +67,59 @@
                     }
                 ]
             }
+        },
+        {
+            "comments": "Spoke Vnet to hub vnet peering",
+            "name": "[variables('spokeVnet-to-hubVnet-PeeringName')]",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2019-04-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId(parameters('hubVnetResourceGroup'),'Microsoft.Network/virtualNetworks/', parameters('hubVnetName'))]"
+                }
+            },
+            "dependsOn": [
+                "[concat(parameters('spokeVnetName'))]"
+            ]
+        },
+        {
+            "comments": "Inline deployment for reverse peering",
+            "name": "[concat('DeployVnetPeering-',variables('hubVnet-to-spoke1Vnet-PeeringName'))]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-05-01",
+            "resourceGroup": "[parameters('hubVnetResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "apiVersion": "2019-04-01",
+                            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+                            "name": "[variables('hubVnet-to-spoke1Vnet-PeeringName')]",
+                            "location": "[resourceGroup().location]",
+                            "properties": {
+                                "allowVirtualNetworkAccess": true,
+                                "allowForwardedTraffic": false,
+                                "allowGatewayTransit": true,
+                                "useRemoteGateways": false,
+                                "remoteVirtualNetwork": {
+                                    "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', parameters('spokeVnetName'))]"
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[concat(parameters('spokeVnetName'))]"
+            ]
         }
     ],
     "outputs": {}

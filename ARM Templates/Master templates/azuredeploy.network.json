@@ -234,6 +234,12 @@
                     },
                     "spokeSubnetPrefix": {
                         "value": "[parameters('spoke1SubnetPrefix')]"
+                    },
+                    "hubVnetName": {
+                        "value": "[parameters('hubVnetName')]"
+                    },
+                    "hubVnetResourceGroup": {
+                        "value": "[parameters('virtualNetworkResourceGroup')]"
                     }
                 }
             }
@@ -264,6 +270,12 @@
                     },
                     "spokeSubnetPrefix": {
                         "value": "[parameters('spoke2SubnetPrefix')]"
+                    },
+                    "hubVnetName": {
+                        "value": "[parameters('hubVnetName')]"
+                    },
+                    "hubVnetResourceGroup": {
+                        "value": "[parameters('virtualNetworkResourceGroup')]"
                     }
                 }
             }
