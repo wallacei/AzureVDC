@@ -40,8 +40,6 @@
         }
     },
     "variables": {
-        "spokeVnetRef": "[resourceid('Microsoft.Network/virtualNetworks', parameters('spokeVnetName'))]",
-        "hubVnetRef":    "[resourceid('Microsoft.Network/virtualNetworks', parameters('hubVnetName'))]",
         "spokeVnet-to-hubVnet-PeeringName": "[concat(parameters('spokeVnetName'), '/to-', parameters('hubVnetName'), '-', 'Peering')]",
         "hubVnet-to-spoke1Vnet-PeeringName": "[concat(parameters('hubVnetName'), '/to-', parameters('spokeVnetName'), '-', 'Peering')]"
     },
@@ -51,6 +49,9 @@
             "name": "[parameters('spokeVnetName')]",
             "apiVersion": "2017-06-01",
             "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId(parameters('hubVnetResourceGroup'),'Microsoft.Network/virtualNetworks/', parameters('hubVnetName'))]"
+            ],
             "comments": "Deployment of the spoke virtual network",
             "properties": {
                 "addressSpace": {
