@@ -1,0 +1,15 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "spoke1VnetName": {
+            "value": "vdc-spoke1-vnet"
+        },
+        "spoke2VnetName": {
+            "value": "vdc-spoke2-vnet"
+        },
+        "hubVnetName": {
+            "value": "vdc-hub-vnet"
+        }
+    }
+}

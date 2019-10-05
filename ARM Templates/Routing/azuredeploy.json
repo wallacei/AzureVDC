@@ -1,0 +1,95 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "spoke1VnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of spoke Virtual Network."
+            }
+        },
+        "spoke2VnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of spoke Virtual Network."
+            }
+        },
+        "hubVnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of hub Virtual Network."
+            }
+        }
+    },
+    "variables": {
+        "spoke1VnetRef": "[resourceid('Microsoft.Network/virtualNetworks', parameters('spoke1VnetName'))]",
+        "spoke2VnetRef": "[resourceid('Microsoft.Network/virtualNetworks', parameters('spoke2VnetName'))]",
+        "hubVnetRef":    "[resourceid('Microsoft.Network/virtualNetworks', parameters('hubVnetName'))]",
+        "spoke1Vnet-to-hubVnet-PeeringName": "[concat(parameters('spoke1VnetName'), '-', parameters('hubVnetName'), '-', 'Peering')]",
+        "spoke2Vnet-to-hubVnet-PeeringName": "[concat(parameters('spoke2VnetName'), '-', parameters('hubVnetName'), '-', 'Peering')]",
+        "hubVnet-to-spoke1Vnet-PeeringName": "[concat(parameters('hubVnetName'), '-', parameters('spoke1VnetName'), '-', 'Peering')]",
+        "hubVnet-to-spoke2Vnet-PeeringName": "[concat(parameters('hubVnetName'), '-', parameters('spoke2VnetName'), '-', 'Peering')]"
+    },
+    "resources": [
+        {
+            "name": "[variables('spoke1Vnet-to-hubVnet-PeeringName')]",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2019-04-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+              "allowVirtualNetworkAccess": true,
+              "allowForwardedTraffic": false,
+              "allowGatewayTransit": false,
+              "useRemoteGateways": false,
+              "remoteVirtualNetwork": {
+                  "id": "[variables('hubVnetRef')]"
+              }
+            }
+        },
+        {
+            "name": "[variables('spoke2Vnet-to-hubVnet-PeeringName')]",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2019-04-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+              "allowVirtualNetworkAccess": true,
+              "allowForwardedTraffic": false,
+              "allowGatewayTransit": false,
+              "useRemoteGateways": false,
+              "remoteVirtualNetwork": {
+                  "id": "[variables('hubVnetRef')]"
+              }
+            }
+        },
+        {
+            "name": "[variables('hubVnet-to-spoke1Vnet-PeeringName')]",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2019-04-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+              "allowVirtualNetworkAccess": true,
+              "allowForwardedTraffic": false,
+              "allowGatewayTransit": false,
+              "useRemoteGateways": false,
+              "remoteVirtualNetwork": {
+                  "id": "[variables('spoke1VnetRef')]"
+              }
+            }
+        },
+        {
+            "name": "[variables('hubVnet-to-spoke2Vnet-PeeringName')]",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2019-04-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+              "allowVirtualNetworkAccess": true,
+              "allowForwardedTraffic": false,
+              "allowGatewayTransit": false,
+              "useRemoteGateways": false,
+              "remoteVirtualNetwork": {
+                  "id": "[variables('spoke2VnetRef')]"
+              }
+            }
+        }
+    ]
+}
