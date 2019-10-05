@@ -89,7 +89,6 @@
         },
         {
             "comments": "Inline deployment for reverse peering",
-            "name": "[concat('DeployVnetPeering-',variables('hubVnet-to-spoke1Vnet-PeeringName'))]",
             "name": "[concat('DeployVnetPeering-', parameters('hubVnetName'), '-to-', parameters('spokeVnetName'))]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
