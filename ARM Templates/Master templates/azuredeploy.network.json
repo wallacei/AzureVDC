@@ -212,7 +212,8 @@
             "name": "provisionSpoke1VirtualNetwork",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
-                "[resourceId('Microsoft.Resources/resourceGroups', parameters('spoke1VirtualNetworkResourceGroup'))]"
+                "[resourceId('Microsoft.Resources/resourceGroups', parameters('spoke1VirtualNetworkResourceGroup'))]",
+                "provisionVirtualNetwork"
             ],
             "apiVersion": "2018-11-01",
             "ResourceGroup": "[parameters('spoke1VirtualNetworkResourceGroup')]",
@@ -248,7 +249,8 @@
             "name": "provisionSpoke2VirtualNetwork",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
-                "[resourceId('Microsoft.Resources/resourceGroups', parameters('spoke2VirtualNetworkResourceGroup'))]"
+                "[resourceId('Microsoft.Resources/resourceGroups', parameters('spoke2VirtualNetworkResourceGroup'))]",
+                "provisionVirtualNetwork"
             ],
             "apiVersion": "2018-11-01",
             "ResourceGroup": "[parameters('spoke2VirtualNetworkResourceGroup')]",
