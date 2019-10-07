@@ -131,7 +131,7 @@
                         "createOption": "FromImage",
                         "name": "[variables('osDiskName')]",
                         "managedDisk": {
-                            "storageAccountType": "Premium_LRS"
+                            "storageAccountType": "Standard_LRS"
                         }
                     }
                 },
