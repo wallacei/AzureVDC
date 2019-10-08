@@ -1,0 +1,60 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "_artifactsLocation": {
+			"value": "https://raw.githubusercontent.com/wallacei/AzureVDC/master/"
+        },
+        "virtualNetworkResourceGroup": {
+            "value": "rg-hub-network"
+        },
+        "spoke1VirtualNetworkResourceGroup": {
+            "value": "rg-spoke1-network"
+        },
+        "spoke2VirtualNetworkResourceGroup": {
+            "value": "rg-spoke2-network"
+        },
+        "location": {
+            "value": "North Europe"
+        },
+        "hubVnetName": {
+            "value": "vdc-hub-vnet"
+        },
+        "gatewaySubnetName": {
+            "value": "GatewaySubnet"
+        },
+        "gatewaySubnetPrefix": {
+            "value": "10.1.0.0/27"
+        },
+        "gatewaySubnetRouteTableName": {
+            "value": "GatewaySubnet-to-nva"
+        },
+        "spoke1VnetName": {
+            "value": "vdc-spoke1-vnet"
+        },
+        "spoke1SubnetName": {
+            "value": "spoke1subnet"
+        },
+        "spoke1SubnetPrefix": {
+            "value": "10.2.0.0/24"
+        },
+        "spoke1SubnetRouteTableName": {
+            "value": "spoke1subnet-to-nva"
+        },
+        "spoke2VnetName": {
+            "value": "vdc-spoke2-vnet"
+        },
+        "spoke2SubnetName": {
+            "value": "spoke2subnet"
+        },
+        "spoke2SubnetPrefix": {
+            "value": "10.3.0.0/24"
+        },
+        "spoke2SubnetRouteTableName": {
+            "value": "spoke2subnet-to-nva"
+        },
+        "nextHopIPAddress": {
+            "value": "10.1.0.36"
+        }
+    }
+}

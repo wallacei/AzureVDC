@@ -1,0 +1,75 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the virtual network"
+            }
+        },
+        "subnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The subnet name"
+            }
+        },
+        "subnetPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The subnet prefix"
+            }
+        },
+        "subnetRouteTableName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the route table associated to the subnet"
+            }
+        },
+        "nextHopIPAddress": {
+            "type": "string",
+            "metadata": {
+                "description": "The IP Address of the NVA"
+            }
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "name": "[parameters('subnetRouteTableName')]",
+            "type": "Microsoft.Network/routeTables",
+            "apiVersion": "2018-11-01",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "properties": {
+                "routes": [
+                    {
+                        "properties": {
+                            "addressPrefix":    "0.0.0.0/0",
+                            "nextHopType":      "VirtualAppliance",
+                            "nextHopIpAddress": "[parameters('nextHopIPAddress')]"
+                        },
+                        "name": "route-to-nva"
+                    }
+                ],
+                "disableBgpRoutePropagation": true
+            },
+            "resources": []
+        },
+        {
+            "apiVersion": "2019-04-01",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(parameters('vnetName'), '/', parameters('subnetName'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/routeTables', parameters('subnetRouteTableName'))]"
+            ],
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "addressPrefix": "[parameters('subnetPrefix')]",
+                "routeTable": {
+                    "id": "[resourceId('Microsoft.Network/routeTables', parameters('subnetRouteTableName'))]"
+                }
+            }
+        }
+    ]
+}

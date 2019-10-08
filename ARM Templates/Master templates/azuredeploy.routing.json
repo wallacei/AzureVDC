@@ -1,0 +1,212 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "_artifactsLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "Path to the repository where the linked templates can be found"
+            },
+            "defaultValue": "https://raw.githubusercontent.com/wallacei/AzureVDC/master/"
+        },
+        "virtualNetworkResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "The resource group where to deploy the virtual network"
+            }
+        },
+        "spoke1VirtualNetworkResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "The resource group where to deploy the spoke 1 virtual network"
+            }
+        },
+        "spoke2VirtualNetworkResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "The resource group where to deploy the spoke 2 virtual network"
+            }
+        },
+        "hubVnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the HUB virtual network"
+            }
+        },
+        "gatewaySubnetPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The prefix for the gateway subnet"
+            }
+        },
+        "gatewaySubnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the gateway subnet"
+            }
+        },
+        "gatewaySubnetRouteTableName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the route table associated to the subnet"
+            }
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "The Azure location to deploy all resources"
+            },
+            "defaultValue": "[resourceGroup().location]"
+        },
+        "spoke1VnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the spoke 1 virtual network"
+            }
+        },
+        "spoke1SubnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the spoke 1 subnet"
+            }
+        },
+        "spoke1SubnetPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The prefix for the spoke 1 subnet"
+            }
+        },
+        "spoke1SubnetRouteTableName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the route table associated to the subnet"
+            }
+        },
+        "spoke2VnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the spoke 2 virtual network"
+            }
+        },
+        "spoke2SubnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the spoke 2 subnet"
+            }
+        },
+        "spoke2SubnetPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The prefix for the spoke 2 subnet"
+            }
+        },
+        "spoke2SubnetRouteTableName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the route table associated to the subnet"
+            }
+        },
+        "nextHopIPAddress": {
+            "type": "string",
+            "metadata": {
+                "description": "The IP Address of the NVA"
+            }
+        }
+    },
+    "variables": {
+        "routingTemplateUri": "[uri(parameters('_artifactsLocation'), concat('ARM Templates/Routing/azuredeploy.json'))]"
+    },
+    "resources": [
+        {
+            "name": "provisionGatewaySubnetRouting",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2018-11-01",
+            "ResourceGroup": "[parameters('virtualNetworkResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('routingTemplateUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "vnetName": {
+                        "value": "[parameters('hubVnetName')]"
+                    },
+                    "subnetName": {
+                        "value": "[parameters('gatewaySubnetName')]"
+                    },
+                    "subnetPrefix": {
+                        "value": "[parameters('gatewaySubnetPrefix')]"
+                    },
+                    "subnetRouteTableName": {
+                        "value": "[parameters('gatewaySubnetRouteTableName')]"
+                    },
+                    "nextHopIPAddress": {
+                        "value": "[parameters('nextHopIPAddress')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "provisionSpoke1SubnetRouting",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2018-11-01",
+            "ResourceGroup": "[parameters('spoke1VirtualNetworkResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('routingTemplateUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "vnetName": {
+                        "value": "[parameters('spoke1VnetName')]"
+                    },
+                    "subnetName": {
+                        "value": "[parameters('spoke1SubnetName')]"
+                    },
+                    "subnetPrefix": {
+                        "value": "[parameters('spoke1SubnetPrefix')]"
+                    },
+                    "subnetRouteTableName": {
+                        "value": "[parameters('spoke1SubnetRouteTableName')]"
+                    },
+                    "nextHopIPAddress": {
+                        "value": "[parameters('nextHopIPAddress')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "provisionSpoke2VirtualNetwork",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2018-11-01",
+            "ResourceGroup": "[parameters('spoke2VirtualNetworkResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('spokeNetworkTemplateUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "vnetName": {
+                        "value": "[parameters('spoke2VnetName')]"
+                    },
+                    "subnetName": {
+                        "value": "[parameters('spoke2SubnetName')]"
+                    },
+                    "subnetPrefix": {
+                        "value": "[parameters('spoke2SubnetPrefix')]"
+                    },
+                    "subnetRouteTableName": {
+                        "value": "[parameters('spoke2SubnetRouteTableName')]"
+                    },
+                    "nextHopIPAddress": {
+                        "value": "[parameters('nextHopIPAddress')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}
