@@ -185,7 +185,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('spokeNetworkTemplateUri')]",
+                    "uri": "[variables('routingTemplateUri')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
