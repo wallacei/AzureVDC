@@ -27,7 +27,7 @@
             "value": "10.1.0.0/27"
         },
         "gatewaySubnetRouteTableName": {
-            "value": "GatewaySubnet-to-nva"
+            "value": "GatewaySubnet-to-nva-rt"
         },
         "spoke1VnetName": {
             "value": "vdc-spoke1-vnet"
@@ -39,7 +39,7 @@
             "value": "10.2.0.0/24"
         },
         "spoke1SubnetRouteTableName": {
-            "value": "spoke1subnet-to-nva"
+            "value": "spoke1subnet-to-nva-rt"
         },
         "spoke2VnetName": {
             "value": "vdc-spoke2-vnet"
@@ -51,10 +51,67 @@
             "value": "10.3.0.0/24"
         },
         "spoke2SubnetRouteTableName": {
-            "value": "spoke2subnet-to-nva"
+            "value": "spoke2subnet-to-nva-rt"
         },
-        "nextHopIPAddress": {
-            "value": "10.1.0.36"
-        }
+		"gatewayRoutesParameterArray": {
+            "value": [
+                {
+					"routes": [
+                        {
+                            "name": "to-onprem-route",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "10.1.0.36",
+                            "destinationAddressPrefix": "192.168.0.0/24"
+                        },
+						{
+                            "name": "to-mgmtsubnet-route",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "10.1.0.36",
+                            "destinationAddressPrefix": "10.1.0.96/27"
+                        },
+						{
+                            "name": "to-spoke1-route",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "10.1.0.36",
+                            "destinationAddressPrefix": "10.2.0.0/27"
+                        },
+						{
+                            "name": "to-mgmtsubnet-route",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "10.1.0.36",
+                            "destinationAddressPrefix": "10.3.0.0/27"
+                        }
+                    ]
+                }
+			]
+		},
+		"spoke1RoutesParameterArray": {
+            "value": [
+                {
+					"routes": [
+                        {
+                            "name": "all-traffic-route",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "10.1.0.36",
+                            "destinationAddressPrefix": "0.0.0.0/0"
+                        }
+                    ]
+                }
+			]
+        },
+        "spoke2RoutesParameterArray": {
+            "value": [
+                {
+					"routes": [
+                        {
+                            "name": "all-traffic-route",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "10.1.0.36",
+                            "destinationAddressPrefix": "0.0.0.0/0"
+                        }
+                    ]
+                }
+			]
+		}
     }
 }

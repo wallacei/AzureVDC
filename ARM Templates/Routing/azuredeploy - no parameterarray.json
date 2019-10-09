@@ -2,12 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "ParameterArray": {
-            "type": "array",
-            "metadata": {
-                "description": "Array containing the routes for the particular subnet and routing table"
-            }
-        },
         "vnetName": {
             "type": "string",
             "metadata": {
@@ -31,6 +25,12 @@
             "metadata": {
                 "description": "The name of the route table associated to the subnet"
             }
+        },
+        "nextHopIPAddress": {
+            "type": "string",
+            "metadata": {
+                "description": "The IP Address of the NVA"
+            }
         }
     },
     "variables": {},
@@ -42,18 +42,14 @@
             "location": "[resourceGroup().location]",
             "tags": {},
             "properties": {
-                "copy": [
+                "routes": [
                     {
-                        "name": "routes",
-                        "count": "[length(parameters('ParameterArray').routes)]",
-                        "input": {
-                                    "name": "[parameters('ParameterArray').routes.name]",
-                                    "properties": {
-                                        "addressPrefix": "[parameters('ParameterArray').routes.destinationAddressPrefix]",
-                                        "nextHopType": "[parameters('ParameterArray').routes.nextHopType]",
-                                        "nextHopIpAddress": "[parameters('ParameterArray').routes.nextHopIpAddress]"
-                                    }
-                        }
+                        "properties": {
+                            "addressPrefix":    "0.0.0.0/0",
+                            "nextHopType":      "VirtualAppliance",
+                            "nextHopIpAddress": "[parameters('nextHopIPAddress')]"
+                        },
+                        "name": "route-to-nva"
                     }
                 ],
                 "disableBgpRoutePropagation": true

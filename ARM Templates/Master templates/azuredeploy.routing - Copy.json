@@ -106,22 +106,10 @@
                 "description": "The name of the route table associated to the subnet"
             }
         },
-        "gatewayRoutesParameterArray": {
-            "type": "array",
+        "nextHopIPAddress": {
+            "type": "string",
             "metadata": {
-                "description": "Array containing the routes for the particular subnet and routing table"
-            }
-        },
-        "spoke1RoutesParameterArray": {
-            "type": "array",
-            "metadata": {
-                "description": "Array containing the routes for the particular subnet and routing table"
-            }
-        },
-        "spoke2RoutesParameterArray": {
-            "type": "array",
-            "metadata": {
-                "description": "Array containing the routes for the particular subnet and routing table"
+                "description": "The IP Address of the NVA"
             }
         }
     },
@@ -153,8 +141,8 @@
                     "subnetRouteTableName": {
                         "value": "[parameters('gatewaySubnetRouteTableName')]"
                     },
-                    "ParameterArray": {
-                        "value": "[parameters('gatewayRoutesParameterArray')]"
+                    "nextHopIPAddress": {
+                        "value": "[parameters('nextHopIPAddress')]"
                     }
                 }
             }
@@ -183,8 +171,8 @@
                     "subnetRouteTableName": {
                         "value": "[parameters('spoke1SubnetRouteTableName')]"
                     },
-                    "ParameterArray": {
-                        "value": "[parameters('spoke1RoutesParameterArray')]"
+                    "nextHopIPAddress": {
+                        "value": "[parameters('nextHopIPAddress')]"
                     }
                 }
             }
@@ -213,8 +201,8 @@
                     "subnetRouteTableName": {
                         "value": "[parameters('spoke2SubnetRouteTableName')]"
                     },
-                    "ParameterArray": {
-                        "value": "[parameters('spoke2RoutesParameterArray')]"
+                    "nextHopIPAddress": {
+                        "value": "[parameters('nextHopIPAddress')]"
                     }
                 }
             }
