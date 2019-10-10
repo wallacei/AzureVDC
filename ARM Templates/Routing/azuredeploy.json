@@ -45,14 +45,14 @@
                 "copy": [
                     {
                         "name": "routes",
-                        "count": "[length(parameters('ParameterArray').routes)]",
+                        "count": "[length(parameters('ParameterArray'))]",
                         "input": {
-                                    "name": "[parameters('ParameterArray').routes.name]",
-                                    "properties": {
-                                        "addressPrefix": "[parameters('ParameterArray').routes.destinationAddressPrefix]",
-                                        "nextHopType": "[parameters('ParameterArray').routes.nextHopType]",
-                                        "nextHopIpAddress": "[parameters('ParameterArray').routes.nextHopIpAddress]"
-                                    }
+                            "name": "[parameters('ParameterArray')[copyIndex('routes')].name]",
+                            "properties": {
+                                "addressPrefix": "[parameters('ParameterArray')[copyIndex('routes')].destinationAddressPrefix]",
+                                "nextHopType": "[parameters('ParameterArray')[copyIndex('routes')].nextHopType]",
+                                "nextHopIpAddress": "[parameters('ParameterArray')[copyIndex('routes')].nextHopIpAddress]"
+                            }
                         }
                     }
                 ],
