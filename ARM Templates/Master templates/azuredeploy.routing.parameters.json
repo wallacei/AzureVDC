@@ -58,25 +58,25 @@
                 {
                     "name": "to-onprem-route",
                     "nextHopType": "VirtualAppliance",
-                    "nextHopIpAddress": "10.1.0.36",
+                    "nextHopIpAddress": "10.1.0.40",
                     "destinationAddressPrefix": "192.168.0.0/24"
                 },
 				{
                     "name": "to-mgmtsubnet-route",
                     "nextHopType": "VirtualAppliance",
-                    "nextHopIpAddress": "10.1.0.36",
+                    "nextHopIpAddress": "10.1.0.40",
                     "destinationAddressPrefix": "10.1.0.96/27"
                 },
 				{
                     "name": "to-spoke1-route",
                     "nextHopType": "VirtualAppliance",
-                    "nextHopIpAddress": "10.1.0.36",
+                    "nextHopIpAddress": "10.1.0.40",
                     "destinationAddressPrefix": "10.2.0.0/27"
                 },
 				{
                     "name": "to-spoke2-route",
                     "nextHopType": "VirtualAppliance",
-                    "nextHopIpAddress": "10.1.0.36",
+                    "nextHopIpAddress": "10.1.0.40",
                     "destinationAddressPrefix": "10.3.0.0/27"
                 }
             ]
@@ -86,7 +86,7 @@
                 {
 	                "name": "all-traffic-route",
                     "nextHopType": "VirtualAppliance",
-                    "nextHopIpAddress": "10.1.0.36",
+                    "nextHopIpAddress": "10.1.0.40",
                     "destinationAddressPrefix": "0.0.0.0/0"
                 }
             ]
@@ -96,7 +96,7 @@
                 {
                     "name": "all-traffic-route",
                     "nextHopType": "VirtualAppliance",
-                    "nextHopIpAddress": "10.1.0.36",
+                    "nextHopIpAddress": "10.1.0.40",
                     "destinationAddressPrefix": "0.0.0.0/0"
                 }
 			]
