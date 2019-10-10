@@ -74,7 +74,7 @@
                     "destinationAddressPrefix": "10.2.0.0/27"
                 },
 				{
-                    "name": "to-mgmtsubnet-route",
+                    "name": "to-spoke2-route",
                     "nextHopType": "VirtualAppliance",
                     "nextHopIpAddress": "10.1.0.36",
                     "destinationAddressPrefix": "10.3.0.0/27"
